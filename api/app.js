@@ -24,6 +24,16 @@ app.use(express.static(path.join(__dirname, "public")));
  */
 app.use("/", indexRouter);
 
+app.use("/artists", indexRouter);
+
+app.use("/concerts", indexRouter);
+
+app.use("/concerts/:idConcert", indexRouter);
+
+app.use("/concerts/:idConcert/reservation/", indexRouter);
+
+app.use("/concerts/:idConcert/reservation/:idReservation", indexRouter);
+
 /**
  * Configuration Swagger, exposition de la doc sur la route /doc
  */

@@ -3,7 +3,18 @@ extends layout
 block content
   h1= title
   p Welcome to the #{title}
+  nav
+    a(href='/artists') Go to Artists 
+    br
+    a(href='/concerts') Go to Concerts 
   h2 Liste des utilisateur·ices de l'application
-  ul
+  table
+    thead 
+      tr
+        th Nom 
+        th Admin 
+    tbody
     each user in users
-      li= user.firstName
+        tr
+          td= user.userName
+          td= user.userRole

@@ -5,7 +5,6 @@ var db = require("../db");
 /* GET home page. */
 router.get("/", async function (req, res, next) {
   // #swagger.summary = "Page d'accueil"
-
   const conn = await db.mysql.createConnection(db.dsn);
 
   try {
@@ -13,33 +12,94 @@ router.get("/", async function (req, res, next) {
 
     const users = rows.map((element) => {
       return {
-        firstName: element.first_name,
+        userName: element.user_name,
+        userRole: element.is_admin,
       };
     });
-    res.render("index", { title: "RESTful web api", users: users });
+    res.render("index", { title: "Home", users: users });
   } catch (error) {
     console.error("Error connecting: " + error.stack);
-    res
-      .status(500)
-      .json({
-        msg: "Nous rencontrons des difficultés, merci de réessayer plus tard.",
-      });
+    res.status(500).render("error", {
+      message:
+        "Nous rencontrons des difficultés, merci de réessayer plus tard.",
+    });
   }
 });
 
 // La liste de tous les artistes en concert
 router.get("/artists", async (req, res) => {
-  console.log("users :>> ", rows);
+  const conn = await db.mysql.createConnection(db.dsn);
+  try {
+    const [rows] = await conn.execute("SELECT * FROM Concert;");
+
+    console.log("rows :>> ", rows);
+    const users = rows.map((element) => {
+      return {
+        artistName: element.artiste_concert,
+      };
+    });
+    res.render("artist", { title: "Artists", users: users });
+  } catch (error) {
+    console.error("Error connecting: " + error.stack);
+    res.status(500).render("error", {
+      message:
+        "Nous rencontrons des difficultés, merci de réessayer plus tard.",
+    });
+  }
 });
 
 // La liste des concerts
 router.get("/concerts", async (req, res) => {
-  res.sendFile(__dirname + "/public/concerts.html");
+  const conn = await db.mysql.createConnection(db.dsn);
+  try {
+    const [rows] = await conn.execute("SELECT * FROM Concert;");
+    console.log('rows :>> ', rows);
+    const users = rows.map((element) => {
+      return {
+        dateConcert: element.date_heure_concert,
+        artistName: element.artiste_concert,
+        styleConcert: element.style_concert,
+        lieuConcert: element.lieu_concert,
+        nbPlaces: element.nb_place_concert,
+      };
+    });
+    console.log("users :>> ", users);
+    res.render("concerts", { title: "Concerts", users: users });
+  } catch (error) {
+    console.error("Error connecting: " + error.stack);
+    res.status(500).render("error", {
+      message:
+        "Nous rencontrons des difficultés, merci de réessayer plus tard.",
+    });
+  }
 });
 
 // Les informations d’un concert
 router.get("/concerts/:idConcert", async (req, res) => {
   const idConcert = req.params.idConcert;
+
+  const conn = await db.mysql.createConnection(db.dsn);
+  try {
+    const [rows] = await conn.execute("SELECT * FROM Concert WHERE id = ?;", idConcert);
+    console.log('rows :>> ', rows);
+    const users = rows.map((element) => {
+      return {
+        dateConcert: element.date_heure_concert,
+        artistName: element.artiste_concert,
+        styleConcert: element.style_concert,
+        lieuConcert: element.lieu_concert,
+        nbPlaces: element.nb_place_concert,
+      };
+    });
+    console.log("users :>> ", users);
+    res.render("concertParId", { title: "Concerts", users: users });
+  } catch (error) {
+    console.error("Error connecting: " + error.stack);
+    res.status(500).render("error", {
+      message:
+        "Nous rencontrons des difficultés, merci de réessayer plus tard.",
+    });
+  }
 });
 
 // La liste des réservations d’un concert --> Gestionnaire only

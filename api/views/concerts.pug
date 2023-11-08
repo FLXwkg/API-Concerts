@@ -1,0 +1,20 @@
+extends layout
+
+block content
+  h1 Liste des Concerts
+  table
+    thead 
+      tr
+        th Nom 
+        th Lieu 
+        th Date 
+        th Places 
+        th Style
+    tbody
+    each user in users
+        tr
+          td= user.artistName
+          td= user.lieuConcert
+          td= user.dateConcert
+          td= user.nbPlaces
+          td= user.styleConcert

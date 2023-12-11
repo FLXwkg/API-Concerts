@@ -31,12 +31,15 @@ function halLinkObject(url, type = '', name = '', templated = false, deprecation
  */
 function mapConcertToResourceObject(concertData, baseURL) {
     return {
-        "_links": [{
-            "self": halLinkObject(baseURL),
-            "reservation": halLinkObject("/concert/id/reservation")
-        }],
-
-        "artist_name":concertData.artistName
+        "_links" : {
+            "self" : halLinkObject(baseURL + '/concerts/' + concertData.id), // reconstruit l'url du concert /concerts/1
+            "reservation" : halLinkObject(baseURL + '/concerts/' + concertData.id + '/reservation', 'string')
+        },
+        "artist" : concertData.artiste_concert,
+        "date" : concertData.dateheure_concert,
+        "location" : concertData.lieu_concert,
+        "musicStyle" : concertData.style_concert,
+        "nbSeatsMaximum" : concertData.nb_place_concert
     }
 }
 

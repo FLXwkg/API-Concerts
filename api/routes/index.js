@@ -57,16 +57,19 @@ router.get("/concerts", async (req, res) => {
   try {
     const [rows] = await conn.execute("SELECT * FROM Concert;");
 
-    const users = rows.map((element) => {
-      return {
-        dateConcert: element.date_heure_concert,
-        artistName: element.artiste_concert,
-        styleConcert: element.style_concert,
-        lieuConcert: element.lieu_concert,
-        nbPlaces: element.nb_place_concert,
-      };
-    });
-    res.send(hal.mapConcertToResourceObject(users, "/concerts"));
+    const resourceObject = {
+      "_links": {
+          "self" : hal.halLinkObject('/concerts')
+      },
+      "_embedded": {
+          "concerts": rows.map(row => hal.mapConcertToResourceObject(row, req.baseUrl))
+      },
+      "nbConcerts": rows.length
+    };
+
+    res.set('Content-type', 'application/hal+json');
+    res.status(200);
+    res.json(resourceObject);
     //res.render("concerts", { title: "Concerts", users: users });
   } catch (error) {
     console.error("Error connecting: " + error.stack);

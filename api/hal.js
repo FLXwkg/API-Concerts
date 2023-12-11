@@ -41,4 +41,4 @@ function mapConcertToResourceObject(concertData, baseURL) {
 }
 
 
-module.exports = { halLinkObject, mapConcertoResourceObject };
+module.exports = { halLinkObject, mapConcertToResourceObject };

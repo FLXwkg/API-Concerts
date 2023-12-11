@@ -1,6 +1,8 @@
 var express = require("express");
 var router = express.Router();
+var hal = require("../hal");
 var db = require("../db");
+
 
 /* GET home page. */
 router.get("/", async function (req, res, next) {
@@ -16,7 +18,8 @@ router.get("/", async function (req, res, next) {
         userRole: element.is_admin,
       };
     });
-    res.render("index", { title: "Home", users: users });
+    res.json(users);
+    //res.render("index", { title: "Home", users: users });
   } catch (error) {
     console.error("Error connecting: " + error.stack);
     res.status(500).render("error", {
@@ -63,7 +66,7 @@ router.get("/concerts", async (req, res) => {
         nbPlaces: element.nb_place_concert,
       };
     });
-    res.json(users);
+    res.send(hal.mapConcertToResourceObject(users, "/concerts"));
     //res.render("concerts", { title: "Concerts", users: users });
   } catch (error) {
     console.error("Error connecting: " + error.stack);
